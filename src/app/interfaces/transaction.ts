@@ -1,6 +1,6 @@
 export interface Transaction {
     id:number;
     customer_id:number;
-    date:Date;
+    date:string;
     amount:number;
 }

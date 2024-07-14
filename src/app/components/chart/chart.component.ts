@@ -63,8 +63,8 @@ export class ChartComponent {
         datasets: [{
           label: 'Total Transaction Amount',
           data: data,
-          backgroundColor: '#3B0055',
-          borderColor: '#3B0055',
+          backgroundColor: '#000',
+          borderColor: '#000',
           borderWidth: 2
         }]
       },

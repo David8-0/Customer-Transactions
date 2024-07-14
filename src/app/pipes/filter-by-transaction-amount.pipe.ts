@@ -12,12 +12,16 @@ export class FilterByTransactionAmountPipe implements PipeTransform {
     let res:Customer[] = [];
     for(let i=0;i<customers.length;i++){
       let flag = true;
-      for(let j=0;j<customers[i].transactions.length && flag;j++){
-        if(customers[i].transactions[j].amount == amount){
-          res.push(customers[i]);
-          flag = false;
+      if(customers[i].transactions){
+        const transactions = customers[i].transactions ?? [];
+        for(let j=0;j<transactions.length && flag;j++){
+          if(transactions[j].amount == amount){
+            res.push(customers[i]);
+            flag = false;
+          }
         }
       }
+      
     }
     return res;
   }

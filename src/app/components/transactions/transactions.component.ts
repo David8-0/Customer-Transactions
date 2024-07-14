@@ -6,11 +6,13 @@ import { FilterByNamePipe } from '../../pipes/filter-by-name.pipe';
 import { FilterByTransactionAmountPipe } from '../../pipes/filter-by-transaction-amount.pipe';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ChartComponent } from '../chart/chart.component';
+import { LocalDataService } from '../../services/local-data.service';
 
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [CommonModule,FormsModule,FilterByNamePipe,FilterByTransactionAmountPipe],
+  imports: [CommonModule,FormsModule,FilterByNamePipe,FilterByTransactionAmountPipe,ChartComponent],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss'
 })
@@ -20,8 +22,8 @@ export class TransactionsComponent implements OnInit{
   transactionSearchKey:number|null=null;
   customers:Customer[]=[];
   transactions:Transaction[] = [];
-
-  constructor(private _data:DataService){}
+  selectedCustomer:Customer= {} as Customer;
+  constructor(private _data:DataService,private _local:LocalDataService){}
 
    ngOnInit() {
        this._data.getAllCustomers().subscribe({
@@ -29,7 +31,7 @@ export class TransactionsComponent implements OnInit{
           this.customers=res;
         },
         error:(err)=>{
-          console.log(err);
+          this.customers = this._local.getAllCustomers();
         }
         
       });
@@ -37,22 +39,36 @@ export class TransactionsComponent implements OnInit{
        this._data.getAllTransactions().subscribe({
         next:(res)=>{
           this.transactions=res;
-           this.customers.forEach(customer => {
+          this.customers.forEach(customer => {
             customer.transactions = [];
             this.transactions.forEach(transaction =>{
-              if(customer.id == transaction.customer_id){
+              if(customer.id == transaction.customer_id && customer.transactions){
                 customer.transactions.push(transaction);
               }
             })
           });
-          console.log(this.customers);
-          
         },
         error:(err)=>{
-          console.log(err);
+          this.transactions=this._local.getAllTransactions();
+          this.customers.forEach(customer => {
+            customer.transactions = [];
+            this.transactions.forEach(transaction =>{
+              if(customer.id == transaction.customer_id && customer.transactions){
+                customer.transactions.push(transaction);
+              }
+            })
+          });
+        },
+        complete:()=>{
+          
+          
+         
         }
         
       });
   }
 
+  selectCustomer(customer:Customer){
+    this.selectedCustomer=customer;
+  }
 }
