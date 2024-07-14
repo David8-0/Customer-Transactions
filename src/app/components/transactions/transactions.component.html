@@ -1,0 +1,39 @@
+<div class="container">
+    <h1 class="text-center">Customer Transactions </h1>
+
+    <div id="filters">
+        <input type="text" placeholder="search by name" [(ngModel)]="nameSearchKey" class="form-control my-2">
+        <input type="number" placeholder="search by transaction amount " [(ngModel)]="transactionSearchKey" class="form-control my-2">
+    </div>
+    <div class="table-responsive my-3">
+        <table class="table text-center table-hover">
+            <thead>
+                <tr>
+                  <th>Customer ID</th>
+                  <th>Customer Name</th>
+                  <th>Transaction Details</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for( customer of customers | filterByName : nameSearchKey | filterByTransactionAmount : transactionSearchKey ;track customer){
+                    <tr>
+                        <td>{{customer.id}}</td>
+                        <td>{{customer.name}}</td>
+                        <td>
+                            @for(transaction of customer.transactions; track transaction){
+                                <div>
+                                    Transaction ID: {{transaction.id}} Date: {{transaction.date}} Amount : {{transaction.amount}} $
+                                </div>
+                            }
+                        </td>
+                        <td>
+                            <button class="btn btn-info">Display Chart</button>
+                        </td>
+                    </tr>
+                }
+
+              </tbody>
+        </table>
+    </div>
+</div>
